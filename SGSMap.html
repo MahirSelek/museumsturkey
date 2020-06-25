@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Museum</title>
+<link rel="stylesheet" href="leaflet.css"/>
+<link rel="stylesheet" href="leaflet-search-master/leaflet-search-min.css" />
+<script src="leaflet.js"></script>
+<script src="leaflet.ajax.min.js"></script>
+<script src="spin.js"></script>
+<script src="leaflet.spin.js"></script>
+<script src="jquery/jquery-1.11.0.min.js"></script>
+<script src="leaflet-pattern/leaflet.pattern.js"></script>
+<style>
+body{padding:0;margin:0;}
+html,body,#map{width:100%;height:100%;}
+.custom .leaflet-popup-tip,
+.custom .leaflet-popup-content-wrapper{background:#e93434;color:#ffffff;}
+.leaflet-popup-content{min-width:200px;max-width:200px;max-height:200px;overflow-y:auto;}
+@media only screen and (min-width: 600px){.leaflet-popup-content{min-width:350px;max-width:350px;max-height:600px;overflow-y:auto;}}
+.info{
+padding:6px 8px;
+font:14px/16px Arial,Helvetica,sans-serif;
+background:white;
+background:rgba(255,255,255,0.8);
+box-shadow:0 0 15px rgba(0,0,0,0.2);
+border-radius:5px;
+}
+.info h2{
+margin:0 0 5px;
+color:#777;
+}
+img {max-width:150px;max-height:150px;width:auto;height:auto;}
+.popup{text-align:center;}.popup .slideshow .image{display:none;}.popup .slideshow .image.active{display:block;}
+.popup .slideshow img{max-width:150px;max-height:150px;width:auto;height:auto;}.popup .slideshow .caption{background:#eee;padding:10px;}.popup .cycle{padding:10px 0 20px;}
+.popup .cycle a.prev{float:left;;padding:20px;}.popup .cycle a.next{float:right;;padding:20px;}
+@media only screen and (min-width: 600px){
+img {max-width:300px;max-height:300px;width:auto;height:auto;}
+.popup{text-align:center;}.popup .slideshow .image{display:none;}.popup .slideshow .image.active{display:block;}
+.popup .slideshow img{max-width:300px;max-height:300px;width:auto;height:auto;}.popup .slideshow .caption{background:#eee;padding:10px;}.popup .cycle{padding:10px 0 20px;}
+.popup .cycle a.prev{float:left;;padding:20px;}.popup .cycle a.next{float:right;;padding:20px;}}
+.legend{max-height:600px;overflow-y:auto;padding: 6px 8px;font:14px Arial,Helvetica,sans-serif;background:white;background:rgba(255, 255, 255, 0.8);box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);border-radius: 5px;line-height:24px;color:#555;} .legend h4{text-align:center;font-size:16px;margin:2px 12px 8px;color:#777;} .legend span{position:relative;bottom:3px;} .legend i{width:18px;height:18px;float:left;margin:0 8px 0 0;opacity:0.7;} .legend i.icon{background-size:18px;background-color: rgba(255, 255, 255, 1);}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script src="leaflet-search-master/leaflet-search-min.js"></script>
+<script>
+var map = L.map('map', {center: [43.2056,37.2276],zoom:3,minZoom:0,maxZoom:13});
+var Stamen_Terrain = L.tileLayer('http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg'
+,{attribution:"Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under ODbL."}
+).addTo(map);
+var icon_Museums_0 = L.icon({iconUrl:'images/Museums_0_1x.png',iconRetinaUrl:'images/Museums_0_2x.png',iconSize:[27,25],iconAnchor:[5,20],popupAnchor:[0,-20]});
+var icon_Museums_1 = L.icon({iconUrl:'images/Museums_1_1x.png',iconRetinaUrl:'images/Museums_1_2x.png',iconSize:[32,30],iconAnchor:[6,25],popupAnchor:[0,-25]});
+var icon_Museums_2 = L.icon({iconUrl:'images/Museums_2_1x.png',iconRetinaUrl:'images/Museums_2_2x.png',iconSize:[36,33],iconAnchor:[7,27],popupAnchor:[0,-27]});
+var icon_Museums_3 = L.icon({iconUrl:'images/Museums_3_1x.png',iconRetinaUrl:'images/Museums_3_2x.png',iconSize:[41,38],iconAnchor:[8,31],popupAnchor:[0,-31]});
+var icon_Museums_4 = L.icon({iconUrl:'images/Museums_4_1x.png',iconRetinaUrl:'images/Museums_4_2x.png',iconSize:[46,43],iconAnchor:[8,35],popupAnchor:[0,-35]});
+var icon_Museums_5 = L.icon({iconUrl:'images/Museums_5_1x.png',iconRetinaUrl:'images/Museums_5_2x.png',iconSize:[49,46],iconAnchor:[9,37],popupAnchor:[0,-37]});
+var icon_Museums_6 = L.icon({iconUrl:'images/Museums_6_1x.png',iconRetinaUrl:'images/Museums_6_2x.png',iconSize:[55,51],iconAnchor:[10,42],popupAnchor:[0,-42]});
+function Museums_popup(feature,layer){
+var popupcontent='<p><b><u>Museums</b></u></p><p><b>Name: </b>'+feature.properties['Name']+'</p><p><b>Visitors: </b>'+feature.properties['Visitors']+'</p><p><b>Description: </b>'+feature.properties['Description']+'</p>';
+ var images = feature.properties.Photos;var slideshowContent = '';for(var i=0; i<images.length;i++){var img=images[i];slideshowContent += '<div class="image' + (i === 0 ? ' active' : '') + '"><a href="'+img+'" target="_blank"><img src="' + img + '" /></a></div>';}popupcontent +=  '<div id="' + feature.properties['Photos'] + '" class="popup"><div class="slideshow">' + slideshowContent + '</div><div class="cycle"><a href="#" class="prev">&laquo; Previous</a><a href="#" class="next">Next &raquo;</a></div></div>';
+layer.bindPopup(popupcontent);}
+function style_Museums(feature,latlng){
+if ((feature.properties.Visitors >= -1.79769313486232E308) && (feature.properties.Visitors < 10189)){
+return L.marker(latlng,{icon: icon_Museums_0});
+}
+else if ((feature.properties.Visitors >= 10189) && (feature.properties.Visitors < 14570)){
+return L.marker(latlng,{icon: icon_Museums_1});
+}
+else if ((feature.properties.Visitors >= 14570) && (feature.properties.Visitors < 20364)){
+return L.marker(latlng,{icon: icon_Museums_2});
+}
+else if ((feature.properties.Visitors >= 20364) && (feature.properties.Visitors < 32093)){
+return L.marker(latlng,{icon: icon_Museums_3});
+}
+else if ((feature.properties.Visitors >= 32093) && (feature.properties.Visitors < 100000)){
+return L.marker(latlng,{icon: icon_Museums_4});
+}
+else if ((feature.properties.Visitors >= 100000) && (feature.properties.Visitors < 268456)){
+return L.marker(latlng,{icon: icon_Museums_5});
+}
+else if ((feature.properties.Visitors >= 268456) && (feature.properties.Visitors < 1.79769313486232E308)){
+return L.marker(latlng,{icon: icon_Museums_6});
+}
+}
+var Museums = new L.GeoJSON.AJAX("Data/Museums.geojson", {pointToLayer:style_Museums,onEachFeature:Museums_popup}).addTo(map);
+var searchControl = new L.Control.Search({layer: Museums,propertyName: 'Name',position:'topleft',marker: false,textPlaceholder:'Search by Name',moveToLocation: function(latlng,title,map){map.setView(latlng, 18);}});
+searchControl.on('search:locationfound',function(e){if(e.layer._popup)e.layer.openPopup();}).on('search:collapsed',function(e){featuresLayer.eachLayer(function(layer){featuresLayer.resetStyle(layer);});});map.addControl(searchControl);
+if (screen.width > 600){
+var title = new L.Control({position: 'topright'});
+title.onAdd=function(map){this._div=L.DomUtil.create('div','info');
+this.update();
+return this._div;};
+title.update=function(){this._div.innerHTML=
+'<h2>Museum</h2>Map'};
+title.addTo(map);}
+var leg=L.control({position:'bottomright'});leg.onAdd=function(map){var div=L.DomUtil.create("div","legend");
+div.innerHTML += '<h4>Museums</h4><br><table><tr><td></td><td><b>Visitors</b></td></tr><tr><td><img src="images/Museums_0_1x.png"></td><td>Less than or equal to 10189</td></tr><tr><td><img src="images/Museums_1_1x.png"></td><td>10189 to 14570</td></tr><tr><td><img src="images/Museums_2_1x.png"></td><td>14570 to 20364</td></tr><tr><td><img src="images/Museums_3_1x.png"></td><td>20364 to 32093</td></tr><tr><td><img src="images/Museums_4_1x.png"></td><td>32093 to 100000</td></tr><tr><td><img src="images/Museums_5_1x.png"></td><td>100000 to 268456</td></tr><tr><td><img src="images/Museums_6_1x.png"></td><td>Greater than 268456</td></tr></table>'
+return div;};var showinglegend=false;var legbutton=L.control({position:'bottomright'});legbutton.onAdd=function(map){this._div=L.DomUtil.create('div','legbtn');this.update();return this._div;};legbutton.update=function(){this._div.innerHTML='<img class="mapbtn" id="lbtnimg" src="images/legbtn1x.png" onclick="lbtnclick()" />'};legbutton.addTo(map);function lbtnclick(){if (showinglegend==true){map.removeControl(leg);showinglegend=false;document.getElementById("lbtnimg").src="images/legbtn1x.png";}else{leg.addTo(map);showinglegend=true;document.getElementById("lbtnimg").src="images/legbtnActive1x.png";}}
+var _baselyrctrl_={"Stamen Terrain":Stamen_Terrain};
+var _overlayctrl_={"Museums":Museums};
+L.control.layers(_baselyrctrl_,_overlayctrl_).addTo(map);
+$('#map').on('click', '.popup .cycle a',function(){
+var $slideshow = $('.slideshow'),$newSlide;if ($(this).hasClass('prev')) {
+$newSlide = $slideshow.find('.active').prev();if ($newSlide.index()<0){
+$newSlide = $('.image').last();}}else{
+$newSlide = $slideshow.find('.active').next();if ($newSlide.index()<0){
+$newSlide = $('.image').first();}}
+$slideshow.find('.active').removeClass('active').hide();
+$newSlide.addClass('active').show();return false;});
+</script></body></html>
